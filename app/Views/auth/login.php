@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 require_once __DIR__ . '/../layouts/config-view.php';
 ?>
 <!DOCTYPE html>
@@ -19,9 +18,7 @@ require_once __DIR__ . '/../layouts/config-view.php';
                 <div class="text-center mb-4">
                     <div class="brand-mark mx-auto mb-3">AL</div>
                     <h1 class="h3 mb-1">AtendeLab</h1>
-                    <p class="text-secondary mb-0">
-                        Controle de atendimentos acadêmicos
-                    </p>
+                    <p class="text-secondary mb-0">Controle de atendimentos acadêmicos</p>
                 </div>
 
                 <?php if (!empty($mensagem)): ?>
@@ -30,31 +27,26 @@ require_once __DIR__ . '/../layouts/config-view.php';
                     </div>
                 <?php endif; ?>
 
-                <?php if (!empty($erroLogin)): ?>
+                <?php if (!empty($erro)): ?>
                     <div class="alert alert-danger">
-                        <?= htmlspecialchars((string) $erroLogin, ENT_QUOTES, 'UTF-8') ?>
+                        <?= htmlspecialchars((string) $erro, ENT_QUOTES, 'UTF-8') ?>
                     </div>
                 <?php endif; ?>
 
                 <form method="post" action="<?= $baseUrl ?>?controller=auth&action=entrar">
                     <div class="mb-3">
-                        <label for="email" class="form-label">
-                            E-mail
-                        </label>
+                        <label for="email" class="form-label">E-mail</label>
                         <input type="email" class="form-control" id="email" name="email" required autofocus>
                     </div>
                     <div class="mb-4">
-                        <label for="senha" class="form-label">
-                            Senha
-                        </label>
+                        <label for="senha" class="form-label">Senha</label>
                         <input type="password" class="form-control" id="senha" name="senha" required>
                     </div>
-                    <button class="btn btn-success w-100" type="submit">
-                        Entrar
-                    </button>
+                    <button class="btn btn-success w-100" type="submit">Entrar</button>
                 </form>
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

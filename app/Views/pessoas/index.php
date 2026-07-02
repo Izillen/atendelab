@@ -18,34 +18,13 @@ require __DIR__ . '/../layouts/header.php';
         <form id="formPessoa">
             <input type="hidden" name="id" id="pessoaId">
             <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Nome *</label>
-                    <input class="form-control" name="nome" required>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Documento *</label>
-                    <input class="form-control" name="documento" required>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Telefone</label>
-                    <input class="form-control" name="telefone">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">E-mail *</label>
-                    <input class="form-control" type="email" name="email" required>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Curso</label>
-                    <input class="form-control" name="curso">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Período</label>
-                    <input class="form-control" name="periodo">
-                </div>
-                <div class="col-12">
-                    <label class="form-label">Observações</label>
-                    <textarea class="form-control" name="observacoes" rows="2"></textarea>
-                </div>
+                <div class="col-md-6"><label class="form-label">Nome *</label><input class="form-control" name="nome" required></div>
+                <div class="col-md-3"><label class="form-label">Documento *</label><input class="form-control" name="documento" required></div>
+                <div class="col-md-3"><label class="form-label">Telefone</label><input class="form-control" name="telefone"></div>
+                <div class="col-md-6"><label class="form-label">E-mail *</label><input class="form-control" type="email" name="email" required></div>
+                <div class="col-md-3"><label class="form-label">Curso</label><input class="form-control" name="curso"></div>
+                <div class="col-md-3"><label class="form-label">Período</label><input class="form-control" name="periodo"></div>
+                <div class="col-12"><label class="form-label">Observações</label><textarea class="form-control" name="observacoes" rows="2"></textarea></div>
                 <div class="col-md-3">
                     <label class="form-label">Status</label>
                     <select class="form-select" name="status">
@@ -77,9 +56,7 @@ require __DIR__ . '/../layouts/header.php';
                 </tr>
             </thead>
             <tbody id="tabelaPessoas">
-                <tr>
-                    <td colspan="7" class="text-center py-4">Carregando...</td>
-                </tr>
+                <tr><td colspan="7" class="text-center py-4">Carregando...</td></tr>
             </tbody>
         </table>
     </div>
@@ -89,35 +66,19 @@ require __DIR__ . '/../layouts/header.php';
     const formPessoa = document.getElementById('formPessoa');
     const cardFormulario = document.getElementById('cardFormulario');
 
-    function abrirFormulario() {
-        cardFormulario.classList.remove('d-none');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function fecharFormulario() {
-        cardFormulario.classList.add('d-none');
-        formPessoa.reset();
-        document.getElementById('pessoaId').value = '';
-    }
-
-    function novaPessoa() {
-        fecharFormulario();
-        document.getElementById('tituloFormulario').textContent = 'Nova pessoa';
-        abrirFormulario();
-    }
+    function abrirFormulario() { cardFormulario.classList.remove('d-none'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function fecharFormulario() { cardFormulario.classList.add('d-none'); formPessoa.reset(); document.getElementById('pessoaId').value = ''; }
+    function novaPessoa() { fecharFormulario(); document.getElementById('tituloFormulario').textContent = 'Nova pessoa'; abrirFormulario(); }
 
     async function carregarPessoas() {
         try {
             const dados = AtendeLabApi.toList(await AtendeLabApi.get('pessoas', 'listar'));
             const tbody = document.getElementById('tabelaPessoas');
-            if (!dados.length) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Nenhuma pessoa cadastrada.</td></tr>';
-                return;
-            }
+            if (!dados.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Nenhuma pessoa cadastrada.</td></tr>'; return; }
             tbody.innerHTML = dados.map(p => `<tr>
                 <td>${AtendeLabApi.escape(p.nome)}</td>
-                <td>${AtendeLabApi.escape(p.documento)}</td>
-                <td>${AtendeLabApi.escape(p.email)}</td>
+                <td>${AtendeLabApi.escape(p.documento || '')}</td>
+                <td>${AtendeLabApi.escape(p.email || '')}</td>
                 <td>${AtendeLabApi.escape(p.curso || '')}</td>
                 <td>${AtendeLabApi.escape(p.periodo || '')}</td>
                 <td><span class="badge ${p.status === 'ativo' ? 'text-bg-success' : 'text-bg-secondary'}">${AtendeLabApi.escape(p.status)}</span></td>
@@ -126,9 +87,7 @@ require __DIR__ . '/../layouts/header.php';
                     <button class="btn btn-sm btn-outline-danger" onclick="inativarPessoa(${Number(p.id)})">Inativar</button>
                 </td>
             </tr>`).join('');
-        } catch (error) {
-            AtendeLabApi.showAlert('alerta', error.message, 'danger');
-        }
+        } catch (error) { AtendeLabApi.showAlert('alerta', error.message, 'danger'); }
     }
 
     async function editarPessoa(id) {
@@ -140,9 +99,7 @@ require __DIR__ . '/../layouts/header.php';
                 const field = formPessoa.elements.namedItem(key);
                 if (field) field.value = value ?? '';
             }
-        } catch (error) {
-            AtendeLabApi.showAlert('alerta', error.message, 'danger');
-        }
+        } catch (error) { AtendeLabApi.showAlert('alerta', error.message, 'danger'); }
     }
 
     formPessoa.addEventListener('submit', async event => {
@@ -151,11 +108,8 @@ require __DIR__ . '/../layouts/header.php';
         try {
             await AtendeLabApi.post('pessoas', id ? 'atualizar' : 'criar', new FormData(formPessoa));
             AtendeLabApi.showAlert('alerta', id ? 'Pessoa atualizada com sucesso.' : 'Pessoa cadastrada com sucesso.');
-            fecharFormulario();
-            await carregarPessoas();
-        } catch (error) {
-            AtendeLabApi.showAlert('alerta', error.message, 'danger');
-        }
+            fecharFormulario(); await carregarPessoas();
+        } catch (error) { AtendeLabApi.showAlert('alerta', error.message, 'danger'); }
     });
 
     async function inativarPessoa(id) {
@@ -164,11 +118,10 @@ require __DIR__ . '/../layouts/header.php';
             await AtendeLabApi.post('pessoas', 'inativar', { id });
             AtendeLabApi.showAlert('alerta', 'Pessoa inativada com sucesso.');
             await carregarPessoas();
-        } catch (error) {
-            AtendeLabApi.showAlert('alerta', error.message, 'danger');
-        }
+        } catch (error) { AtendeLabApi.showAlert('alerta', error.message, 'danger'); }
     }
 
     document.addEventListener('DOMContentLoaded', carregarPessoas);
 </script>
+
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
